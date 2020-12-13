@@ -1,0 +1,15 @@
+
+
+
+.nav-item {
+    display: flex;
+    justify-content: center;
+}
+
+.active {
+    border-bottom: 2px solid rgba(255, 255, 245, .9);
+}
+
+.navbar-dark{
+    background-color: #eead2d;
+}
