@@ -10,8 +10,8 @@ export default function Produtos() {
     const [produtos, setProdutos] = useState([]);
 
     useEffect(async () => {
-        const resposta = await fetch("http://localhost/conexao/api/api_produtos.php")
-        const dados = await resposta.json()
+        const resposta = await fetch("http://localhost:3333/")
+        const dados = await resposta.json();
         setProdutos(dados);
     }, []);
 

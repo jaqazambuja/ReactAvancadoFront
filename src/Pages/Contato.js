@@ -3,36 +3,51 @@ import React from 'react';
 
 
 export default function Contato(){
-    const controleEnvio = async (evento) => {
-        
+    const [form, setForm] = React.useState({
 
-        const url = "http://localhost/conexao/api/contato.php";
-        const dados = new FormData(evento.target);
-        const cabecalho = {
-            method: 'POST',
-            body: dados
-        };
+        nome: "",
+        email: "",
+        mensagem: ""
+    })
 
-        const resposta  = await fetch(url, cabecalho);
-        const resultado = await resposta.json();
-        console.log(resultado);
+    const [response, setResponse] = React.useState(null)
+
+    function handleChange({target}){
+        const {id, value} = target
+        setForm({...form, [id]: value})
+        console.log({[id]:value});
     }
 
+    function handleSubmit(event){
+        fetch('http://localhost:3333/contatos', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+    
+            body: JSON.stringify(form)
+        }).then((res) =>{
+            setResponse(res);
+        })
+    }
+        
+
+
     return(
-        <div className="container mt-4 contato">
+        <div className="container mt-4 contato" class="text-white">
         <h3 className="text-center display-4">Deixe sua mensagem!</h3>
-        <form onSubmit={controleEnvio}> 
+        <form onSubmit={handleSubmit}> 
             <div className="form-group">
                 <label for="text">Nome</label>
-                <input type="text" className="form-control" name="nome" id="nome"></input>
+                <input type="text" className="form-control" name="nome" id="nome" value={form.nome} onChange={handleChange}></input>
             </div>
             <div className="form-group">
                 <label for="email">Email</label>
-                <input type="email" class="form-control" name="email" id="email"></input>
+                <input type="email" class="form-control" name="email" id="email" value={form.email} onChange={handleChange}></input>
             </div>
             <div className="form-group">
                 <label>Digite sua mensagem</label>
-                <textarea class="form-control" name="mensagem" id="mensagem"/>
+                <textarea class="form-control" name="mensagem" id="mensagem" value={form.mensagem} onChange={handleChange} />
                 <button className="btn btn-primary mt-3" type="submit">Enviar</button>
             </div>
         </form>

@@ -1,55 +1,66 @@
 import {useEffect, useState} from 'react';
-import { Form, Button, Row } from 'react-bootstrap';
-import Infos from './Infos'
+import { Form, Row } from 'react-bootstrap';
+import Infos from './Infos';
 
-export default function Pedidos(props){
+export default function Pedidos(){
+    const [pedidos, setPedidos] = useState([]);
+    const [form, setForm] = useState({
+        nome: "",
+        cidade: "",
+        produto: "",
+        quantidade: ""
+    })
 
-     const [infos, setInfos] = useState([])
+    const [response, setResponse] = useState(null)
 
-    const envioPedido = async (evento) => {
-        const url = "http://localhost/conexao/api/pedidosv2.php";
-        const dados = new FormData(evento.target);
-        const cabecalho = {
-            method: "POST",
-            body: dados
-        };
-
-        const resposta  = await fetch(url, cabecalho);
-        const resultado = await resposta.json();
-        console.log(resultado)
+    function handleChange({target}){
+        const {id, value} = target
+        setForm({...form, [id]: value})
+        console.log({[id]:value});
     }
 
-   
-        useEffect(() => {
-        async function mostraInfos() {
-            const url = "http://localhost/conexao/api/pedidosv2.php"
+    function handleSubmit(event){                                                               
+        fetch('http://localhost:3333/pedidos', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(form)
+        }).then((res) =>{
+            setResponse(res);
+        })
+    }
+
+
+    useEffect(() => {
+        async function atualizarPedido(){
+            const url = "http://localhost:3333/pedidos";
             const resposta = await fetch(url);
             const resultado = await resposta.json();
-            setInfos(resultado);
-        
+            setPedidos(resultado);
         }
-        
-        mostraInfos();
-    })
+
+        atualizarPedido();
+    }, [])
     
 
     return(
         <Row>
-        <div className='container container-fluid formulario'>
-            <div className="col lg-6 mx-auto">
-            <Form onSubmit={envioPedido}> 
+        <div className='container container-fluid formulario' >
+            <div className="col lg-6 mx-auto" class="text-white">
+            <Form onSubmit={handleSubmit} class="text-white"> 
             <h3 className="titulo-form-">Faça seu pedido</h3>
             <Form.Group>
-                            <Form.Label>Nome </Form.Label>
-                            <Form.Control type="text" id="nome" name="nome"></Form.Control>
+                            <Form.Label class="text-white" >Nome </Form.Label>
+                            <Form.Control type="text" id="nome" name="nome" value={form.nome} onChange={handleChange}></Form.Control>
                         </Form.Group>
                         <Form.Group>
                             <Form.Label>cidade</Form.Label>
-                            <Form.Control type="text" id="cidade" name="cidade"></Form.Control>
+                            <Form.Control type="text" id="cidade" name="cidade" value={form.cidade} onChange={handleChange}></Form.Control>
                         </Form.Group>
                         <Form.Group >
                             <Form.Label>Produto</Form.Label>
-                            <Form.Control id='produto' name="produto" as="select">
+                            <Form.Control id='produto' name="produto" as="select" value={form.produto} onChange={handleChange}>
                             <option value='21' >Televisor semp 20 polegadas</option> 
                             <option value='22' >Televisor phillips 20 polegadas</option> 
                             <option value='23' >Televisor Sony polegadas</option> 
@@ -63,19 +74,18 @@ export default function Pedidos(props){
                             </Form.Group>
                             <Form.Group>
                             <Form.Label>Quatidade </Form.Label>
-                            <Form.Control type="number" id="quantidade" name="quantidade"></Form.Control>
-                        </Form.Group>
-
-                            <Button variant='sucess' type='submit'>Enviar</Button>
+                            <Form.Control type="number" id="quantidade" name="quantidade" value={form.quantidade} onChange={handleChange}></Form.Control>
+                        </Form.Group>     
+                        <input className="btn btn-primary" type="submit" name="enviar" value="Enviar" />
                         </Form>
                         </div>
                         </div>
-
+            
             <div className="row">
                 <div className="col-lg-12 col-md-12 mx-auto">
                     <table className="table table-stripe">
-                        <tbody>
-                            {infos && infos.map(cadastro => <Infos key={cadastro.id} nome={cadastro.nome} cidade={cadastro.cidade} produto={cadastro.produto} descricao={cadastro.descricao} quantidade={cadastro.quantidade} precofinal={cadastro.precofinal} />) }
+                        <tbody class="text-white">
+                            {pedidos && pedidos.map(cadastro => <Infos key={cadastro.id} nome={cadastro.nome} cidade={cadastro.cidade} produto={cadastro.produto} descricao={cadastro.descricao} quantidade={cadastro.quantidade} precofinal={cadastro.precofinal} />) }
                       
                       </tbody>
                 </table>
