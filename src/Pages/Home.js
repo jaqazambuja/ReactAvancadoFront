@@ -10,8 +10,8 @@ function Home() {
             <main>
                 <div className="container-fluid">
                     <div className="jumbotron bg-ligth">
-                        <h2 className="mb-4">Seja bem vindo(a)!</h2>
-                        <p>Aqui nessa loja, <strong>programadores tem desconto</strong> nos produtos para sua casa!</p>
+                        <h2 className="mb-4">Seja bem vindo(a) a Eletrô!</h2>
+                        <p> Loja que desafias as leis da física para trazer os produtos mais legais de todos os tempos!</p>
                     </div>
                 </div>
                 <hr />
